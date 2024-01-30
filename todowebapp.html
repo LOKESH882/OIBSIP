@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #app {
+            max-width: 600px;
+            margin: 2em auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 2em;
+            text-align: center;
+        }
+
+        h1 {
+            color: #3498db;
+        }
+
+        input {
+            padding: 8px;
+            margin-bottom: 10px;
+            width: 60%;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            margin-bottom: 8px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #95a5a6;
+        }
+
+        .actions {
+            display: flex;
+        }
+
+        button {
+            margin-left: 5px;
+            padding: 5px;
+            cursor: pointer;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <h1>To-Do App</h1>
+        <input type="text" id="taskInput" placeholder="Add a new task">
+        <button onclick="addTask()">Add Task</button>
+
+        <h2>Pending Tasks</h2>
+        <ul id="pendingTasks">
+            <!-- Pending tasks will be dynamically added here -->
+        </ul>
+
+        <h2>Completed Tasks</h2>
+        <ul id="completedTasks">
+            <!-- Completed tasks will be dynamically added here -->
+        </ul>
+    </div>
+
+    <script>
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskText = taskInput.value.trim();
+
+            if (taskText !== '') {
+                const task = createTaskElement(taskText);
+                document.getElementById('pendingTasks').appendChild(task);
+                taskInput.value = '';
+            }
+        }
+
+        function createTaskElement(taskText) {
+            const li = document.createElement('li');
+            const taskTextElement = document.createElement('span');
+            const actionsDiv = document.createElement('div');
+            const editButton = document.createElement('button');
+            const completeButton = document.createElement('button');
+            const deleteButton = document.createElement('button');
+
+            taskTextElement.textContent = taskText;
+            actionsDiv.className = 'actions';
+            editButton.textContent = 'Edit';
+            editButton.onclick = () => editTask(li);
+            completeButton.textContent = 'Complete';
+            completeButton.onclick = () => completeTask(li);
+            deleteButton.textContent = 'Delete';
+            deleteButton.onclick = () => deleteTask(li);
+
+            li.appendChild(taskTextElement);
+            li.appendChild(actionsDiv);
+            actionsDiv.appendChild(editButton);
+            actionsDiv.appendChild(completeButton);
+            actionsDiv.appendChild(deleteButton);
+
+            return li;
+        }
+
+        function editTask(taskElement) {
+            const newText = prompt('Edit task:', taskElement.firstChild.textContent);
+            if (newText !== null) {
+                taskElement.firstChild.textContent = newText.trim();
+            }
+        }
+
+        function completeTask(taskElement) {
+            taskElement.classList.toggle('completed');
+            const actionsDiv = taskElement.querySelector('.actions');
+            const completeButton = actionsDiv.querySelector(':nth-child(2)');
+
+            if (taskElement.classList.contains('completed')) {
+                completeButton.textContent = 'Undo';
+                document.getElementById('completedTasks').appendChild(taskElement);
+            } else {
+                completeButton.textContent = 'Complete';
+                document.getElementById('pendingTasks').appendChild(taskElement);
+            }
+        }
+
+        function deleteTask(taskElement) {
+            taskElement.remove();
+        }
+    </script>
+</body>
+
+</html>
